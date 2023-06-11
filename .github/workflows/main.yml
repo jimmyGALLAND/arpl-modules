@@ -158,6 +158,11 @@ jobs:
 
           sudo cp -a ${ROOT_PATH}/src/${KVER:0:1}.x ${ROOT_PATH}/source/input
 
+          # I don't want this either (- -!)
+          if [ "${{ matrix.platform }}" == "v1000" ] || [ "${{ matrix.platform }}" == "r1000" ]; then
+          sed -i "1i #define CONFIG_SYNO_MDIOBUS" ${ROOT_PATH}/source/input/drivers/net/ethernet/broadcom/b44.c ${ROOT_PATH}/source/input/drivers/net/ethernet/broadcom/tg3.c ${ROOT_PATH}/source/input/drivers/net/phy/realtek.c
+          fi
+
           sudo cp -a ${ROOT_PATH}/source ${ROOT_PATH}/build_env/ds.${{ matrix.platform }}-${{ matrix.version }}/
 
       - name: Make
@@ -249,6 +254,19 @@ jobs:
 
           echo "copy 3rd modules"
           [ -d "${PARTY3RD_PATH}" ] && cp -rf "${PARTY3RD_PATH}/." "${{ github.workspace }}/source/output"
+
+          echo "check depends"
+          for M in `ls ${{ github.workspace }}/source/output`; do
+            depends=(`modinfo "${{ github.workspace }}/source/output/${M}" | grep depends: | awk -F: '{print $2}' | awk '$1=$1' | sed 's/,/ /g'`)
+            if [ ${#depends[*]} -gt 0 ]; then
+              for k in ${depends[@]}; do
+                if [ ! -f "${{ github.workspace }}/source/output/${k}.ko" ]; then
+                  [ -f "${OFFICIAL_PATH}/${k}.ko" ] && FLAG=O || FLAG=X
+                  echo "[W][${FLAG}] '${{ matrix.platform }}-${{ env.KVER }}' - '${M}' depends '${k}' does not exist."
+                fi
+              done
+            fi
+          done
 
           tar caf ${{ github.workspace }}/source/${{ matrix.platform }}-${{ env.KVER }}.tgz -C ${{ github.workspace }}/source/output .
 
