@@ -305,7 +305,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
 #          name: modules
-          path: ./modules
+          path: modules
 
       - name: firmware
         run: |
@@ -393,6 +393,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
 
 
