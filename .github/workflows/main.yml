@@ -285,7 +285,7 @@ jobs:
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: modules
+          name: modules-${{ matrix.version }}-${{ matrix.platform }}
           path: |
             ${{ github.workspace }}/source/*.tgz
             
@@ -304,7 +304,7 @@ jobs:
       - name: download to artifacts
         uses: actions/download-artifact@v7
         with:
-          name: modules
+#          name: modules
           path: ./modules
 
       - name: firmware
@@ -336,7 +336,7 @@ jobs:
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: modules
+          name: firmware
           path: |
             firmware.tgz
 
@@ -376,13 +376,15 @@ jobs:
         if: env.VERSION != ''
         uses: actions/download-artifact@v7
         with:
-          name: modules
-          path: ./modules
+#          name: modules
+          path: ./artifacts
 
       - name: Zip modules
         if: env.VERSION != ''
         run: |
           echo "${{ env.VERSION }}" > "modules/VERSION"
+          find artifacts -type f -name "*.tgz" -exec cp {} modules/ \;
+          find artifacts -type f -name "firmware.tgz" -exec cp {} modules/ \;
           zip -9 modules.zip -j modules/*
 
       - name: Release
@@ -391,6 +393,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
 
 
