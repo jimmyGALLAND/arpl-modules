@@ -298,7 +298,7 @@ jobs:
           tar caf ${{ github.workspace }}/source/${{ matrix.platform }}-${{ env.KVER }}.tgz -C ${{ github.workspace }}/source/output .
 
       - name: Upload to Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: modules
           path: |
@@ -349,7 +349,7 @@ jobs:
 
 
       - name: Upload to Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: modules
           path: |
@@ -406,5 +406,6 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
 
