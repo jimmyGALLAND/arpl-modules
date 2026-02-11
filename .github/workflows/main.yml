@@ -256,8 +256,8 @@ jobs:
 
       - name: Tar to Artifacts
         run: |
-          OFFICIAL_PATH="${{ github.workspace }}/official/${{ matrix.platform }}-${{ env.KVER }}"
-          PARTY3RD_PATH="${{ github.workspace }}/thirdparty/${{ matrix.platform }}-${{ env.KVER }}"
+          OFFICIAL_PATH="${{ github.workspace }}/official/${{ matrix.platform }}-${{ matrix.version }}-${{ env.KVER }}"
+          PARTY3RD_PATH="${{ github.workspace }}/thirdparty/${{ matrix.platform }}-${{ matrix.version }}-${{ env.KVER }}"
 
           # echo "copy official modules"
           # for M in `ls ${{ github.workspace }}/source/output`; do
@@ -280,7 +280,7 @@ jobs:
             fi
           done
 
-          tar caf ${{ github.workspace }}/source/${{ matrix.platform }}-${{ env.KVER }}.tgz -C ${{ github.workspace }}/source/output .
+          tar caf ${{ github.workspace }}/source/${{ matrix.platform }}-${{ matrix.version }}-${{ env.KVER }}.tgz -C ${{ github.workspace }}/source/output .
 
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v6
@@ -391,6 +391,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
 
 
