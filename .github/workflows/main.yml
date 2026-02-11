@@ -389,7 +389,7 @@ jobs:
 
       - name: download to artifacts
         if: env.VERSION != ''
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: modules
           path: ./modules
@@ -401,9 +401,10 @@ jobs:
           zip -9 modules.zip -j modules/*
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: env.VERSION != ''
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
