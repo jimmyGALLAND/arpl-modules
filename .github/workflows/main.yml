@@ -139,7 +139,7 @@ jobs:
           while read line; do if [ ${line:0:1} != "#" ]; then export ${line%%=*}="${line#*=}"; fi; done < /env${BUILD_ARCH}.mak
           if [ -f "${KSRC}/Makefile" ]; then
             # gcc issue "unrecognized command-line option '--param=allow-store-data-races=0'".
-            [ "${{ matrix.version }}" == "7.2" || "${{ matrix.version }}" == "7.3" ] && sed -i 's/--param=allow-store-data-races=0/--allow-store-data-races/g' ${KSRC}/Makefile
+            [ "${{ matrix.version }}" == "7.2" ] || [ "${{ matrix.version }}" == "7.3" ] && sed -i 's/--param=allow-store-data-races=0/--allow-store-data-races/g' ${KSRC}/Makefile
 
             VERSION=`cat ${KSRC}/Makefile | grep ^VERSION | awk -F' ' '{print $3}'`
             PATCHLEVEL=`cat ${KSRC}/Makefile | grep ^PATCHLEVEL | awk -F' ' '{print $3}'`
@@ -286,8 +286,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: modules-${{ matrix.version }}-${{ matrix.platform }}
-          path: |
-            ${{ github.workspace }}/source/*.tgz
+          path: ${{ github.workspace }}/source/*.tgz
             
       - name: clean
         run: |
@@ -305,7 +304,7 @@ jobs:
         uses: actions/download-artifact@v7
         with:
 #          name: modules
-          path: modules
+          path: ./artifacts
 
       - name: firmware
         run: |
@@ -337,8 +336,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: firmware
-          path: |
-            firmware.tgz
+          path: firmware.tgz
 
 
   release:
@@ -382,6 +380,7 @@ jobs:
       - name: Zip modules
         if: env.VERSION != ''
         run: |
+          mkdir -p modules
           echo "${{ env.VERSION }}" > "modules/VERSION"
           find artifacts -type f -name "*.tgz" -exec cp {} modules/ \;
           find artifacts -type f -name "firmware.tgz" -exec cp {} modules/ \;
@@ -393,6 +392,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
 
 
