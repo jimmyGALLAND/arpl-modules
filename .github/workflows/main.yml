@@ -256,9 +256,9 @@ jobs:
         run: |
           mkdir -p firmware
 
-          echo "copy 3rd modules"
-          PARTY3RD_PATH="${{ github.workspace }}/thirdparty/firmware"
-          cp -rf ${PARTY3RD_PATH}/* firmware/
+          #echo "copy 3rd modules"
+          #PARTY3RD_PATH="${{ github.workspace }}/thirdparty/firmware"
+          #cp -rf ${PARTY3RD_PATH}/* firmware/
 
           echo "extract all modules"
           for F in ./modules/*.tgz; do mkdir "${F%.tgz}" && tar -xzf "${F}" -C "${F%.tgz}"; done
@@ -337,6 +337,7 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           files: modules.zip
+
 
 
 
