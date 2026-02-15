@@ -81,7 +81,7 @@ jobs:
             platform: braswell
           - version: 7.3
             platform: broadwell
-          - version: 7.3 
+          - version: 7.3
             platform: broadwellnk
           - version: 7.3
             platform: denverton
@@ -252,8 +252,7 @@ jobs:
 
       - name: firmware
         run: |
-          mkdir -p firmware
-          cp -rf "${{ github.workspace }}/firmware/*" firmware/
+          [ -d firmware ] || mkdir firmware
           compgen -G "modules/*/*.tgz" > /dev/null && cp -vf modules/*/*.tgz modules
           echo "extract all modules"
           for F in ./modules/*.tgz; do
